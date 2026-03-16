@@ -61,7 +61,7 @@ app.get('/api/health', (req, res) => {
 // Serve Frontend (production)
 // ---------------------
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
   const distPath = join(__dirname, '..', 'dist');
   app.use(express.static(distPath));
 
@@ -75,12 +75,16 @@ if (process.env.NODE_ENV === 'production') {
 // Start Server
 // ---------------------
 
-app.listen(PORT, () => {
-  console.log(`\n🚀 CareerBot Server running on http://localhost:${PORT}`);
-  console.log(`📡 API endpoints:`);
-  console.log(`   POST /api/chat          — AI chat`);
-  console.log(`   POST /api/resume/analyze — Resume analysis`);
-  console.log(`   GET  /api/health        — Health check`);
-  console.log(`\n🔑 API Key: ${process.env.GEMINI_API_KEY ? '✓ Configured' : '✗ NOT SET — add GEMINI_API_KEY to .env'}`);
-  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}\n`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`\n🚀 CareerBot Server running on http://localhost:${PORT}`);
+    console.log(`📡 API endpoints:`);
+    console.log(`   POST /api/chat          — AI chat`);
+    console.log(`   POST /api/resume/analyze — Resume analysis`);
+    console.log(`   GET  /api/health        — Health check`);
+    console.log(`\n🔑 API Key: ${process.env.GEMINI_API_KEY ? '✓ Configured' : '✗ NOT SET — add GEMINI_API_KEY to .env'}`);
+    console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}\n`);
+  });
+}
+
+export default app;
